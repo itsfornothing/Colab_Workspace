@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'channels',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +98,21 @@ DATABASES = {
         'HOST': os.getenv("DATABASE_HOST"), 
         'PORT': os.getenv("DATABASE_PORT"),      
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+SIMPLE_JWT = {
+    "SIGNING_KEY": os.getenv("JWT_SECRET_KEY"),
+    "ALGORITHM": "HS256",
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 CACHES = {

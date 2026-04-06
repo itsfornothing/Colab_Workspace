@@ -1,0 +1,214 @@
+version: '3.9'
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: DockerFile
+    container_name: gateway
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - user-service
+      - chat-service
+      - collaboration-service
+      - notification-service
+      - media-service
+      - workspace-service
+    networks:
+      - collabnet
+
+  user-service:
+    build:
+      context: ./services/user_service
+      dockerfile: Dockerfile
+    container_name: user-service
+    env_file:
+      - ./services/user_service/.env.local
+    environment:
+      DATABASE_HOST: user-db
+      DATABASE_PORT: 5432
+    depends_on:
+      - user-db
+    networks:
+      - collabnet
+
+  chat-service:
+    build:
+      context: ./services/chat_service
+      dockerfile: Dockerfile
+    container_name: chat-service
+    env_file:
+      - ./services/chat_service/.env.local
+    environment:
+      DATABASE_HOST: chat-db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - chat-db
+      - redis
+    networks:
+      - collabnet
+
+  collaboration-service:
+    build:
+      context: ./services/collaboration_service
+      dockerfile: Dockerfile
+    container_name: collaboration-service
+    env_file:
+      - ./services/collaboration_service/.env.local
+    environment:
+      DATABASE_HOST: collaboration-db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - collaboration-db
+      - redis
+    networks:
+      - collabnet
+
+  media-service:
+    build:
+      context: ./services/media_service
+      dockerfile: Dockerfile
+    container_name: media-service
+    env_file:
+      - ./services/media_service/.env.local
+    environment:
+      DATABASE_HOST: media-db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - media-db
+      - redis
+    networks:
+      - collabnet
+
+  notification-service:
+    build:
+      context: ./services/notification_service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    env_file:
+      - ./services/notification_service/.env.local
+    environment:
+      DATABASE_HOST: notification-db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - notification-db
+      - redis
+    networks:
+      - collabnet
+
+  workspace-service:
+    build:
+      context: ./services/workspace_service
+      dockerfile: Dockerfile
+    container_name: workspace-service
+    env_file:
+      - ./services/workspace_service/.env.local
+    environment:
+      DATABASE_HOST: workspace-db
+      DATABASE_PORT: 5432
+    depends_on:
+      - workspace-db
+    networks:
+      - collabnet
+
+  user-db:
+    image: postgres:16-alpine
+    container_name: user-db
+    environment:
+      POSTGRES_DB: collaboration_user
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - collabnet
+
+  chat-db:
+    image: postgres:16-alpine
+    container_name: chat-db
+    environment:
+      POSTGRES_DB: collaboration_chat
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    volumes:
+      - chat-db-data:/var/lib/postgresql/data
+    networks:
+      - collabnet
+
+  collaboration-db:
+    image: postgres:16-alpine
+    container_name: collaboration-db
+    environment:
+      POSTGRES_DB: collaboration
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    volumes:
+      - collaboration-db-data:/var/lib/postgresql/data
+    networks:
+      - collabnet
+
+  media-db:
+    image: postgres:16-alpine
+    container_name: media-db
+    environment:
+      POSTGRES_DB: collaboration_media
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    volumes:
+      - media-db-data:/var/lib/postgresql/data
+    networks:
+      - collabnet
+
+  notification-db:
+    image: postgres:16-alpine
+    container_name: notification-db
+    environment:
+      POSTGRES_DB: collaboration_notification
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+    networks:
+      - collabnet
+
+  workspace-db:
+    image: postgres:16-alpine
+    container_name: workspace-db
+    environment:
+      POSTGRES_DB: collaboration_workspace
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    volumes:
+      - workspace-db-data:/var/lib/postgresql/data
+    networks:
+      - collabnet
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: redis-server --appendonly yes
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - collabnet
+
+volumes:
+  user-db-data:
+  chat-db-data:
+  collaboration-db-data:
+  media-db-data:
+  notification-db-data:
+  workspace-db-data:
+  redis-data:
+
+networks:
+  collabnet:
+    driver: bridge
