@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+*.pot
+*.mo
+
+# Virtual envs
+.env
+.env.*
+venv/
+.venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+eggs/
+parts/
+sdist/
+var/
+*.manifest
+*.spec
+
+# Test / coverage
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.pytest_cache/
+coverage.xml
+nosetests.xml
+
+# Git / editor
+.git
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+Dockerfile*
