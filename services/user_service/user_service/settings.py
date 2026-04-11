@@ -43,8 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  
-    'app', 
+    'rest_framework',
+    'app',
+    'accounts',
 ]
 
 
@@ -58,8 +59,20 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": os.getenv("JWT_SECRET_KEY"),
+    "SIGNING_KEY": os.getenv("JWT_SECRET_KEY", SECRET_KEY),
     "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+SESSION_CACHE_TTL = 60 * 60 * 24 * 7  
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }
 
 MIDDLEWARE = [

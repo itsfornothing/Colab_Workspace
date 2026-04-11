@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.conf import settings
+from django.utils import timezone
 from uuid import uuid4
 
 
@@ -47,3 +49,41 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+
+class UserSession(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sessions"
+    )
+    refresh_token = models.TextField()
+    device_info = models.CharField(max_length=255, blank=True, null=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    expires_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return self.expires_at < timezone.now()
+
+    def __str__(self):
+        return f"{self.user} - {self.device_info}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["user"]),
+            models.Index(fields=["refresh_token"]),
+            models.Index(fields=["expires_at"]),
+        ]
+        unique_together = ("user", "device_info")
+
+
+class SecurityEvent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    event_type = models.CharField(max_length=50)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.event_type} @ {self.ip_address}"

@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -52,9 +55,24 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app.middleware.WorkspaceMiddleware',
 ]
 
 ROOT_URLCONF = 'workspace_service.urls'
+
+ASGI_APPLICATION = "workspace_service.asgi.application"
+
+REDIS_HOST = os.getenv("REDIS_HOST", "127.0.0.1")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
+        },
+    },
+}
 
 TEMPLATES = [
     {
@@ -141,6 +159,19 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "your_email@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "your_app_password")
+
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Workspace App <noreply@workspace.com>")
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
