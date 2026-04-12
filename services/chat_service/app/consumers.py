@@ -14,8 +14,68 @@ from .models import (
 from .presence import set_user_online, set_user_offline
 from .search import index_message, delete_message_doc
 from .firebase import send_push_to_channel_members   # see firebase.py
-
+import logging
+import threading
+import requests
+from django.conf import settings
+ 
 logger = logging.getLogger(__name__)
+ 
+NOTIFICATION_SERVICE_URL = getattr(
+    settings, "NOTIFICATION_SERVICE_URL", "http://notification-service/api"
+)
+ 
+ 
+def _post_event(payload: dict) -> None:
+    """Fire-and-forget HTTP POST to the notification service."""
+    try:
+        resp = requests.post(
+            f"{NOTIFICATION_SERVICE_URL}/events/",
+            json=payload,
+            timeout=3,
+        )
+        if not resp.ok:
+            logger.warning(
+                "Notification service returned %s: %s", resp.status_code, resp.text
+            )
+    except requests.RequestException:
+        logger.exception("Failed to reach notification service")
+ 
+ 
+def _fire(payload: dict) -> None:
+    """Send in a daemon thread so callers are never blocked."""
+    t = threading.Thread(target=_post_event, args=(payload,), daemon=True)
+    t.start()
+ 
+ 
+# ------------------------------------------------------------------ #
+# Public helpers — call these from the chat service                   #
+# ------------------------------------------------------------------ #
+ 
+def notify_new_message(receiver_id: str, sender_id: str, message: str, channel_id: str = None) -> None:
+    _fire({
+        "event_type": "message_created",
+        "payload": {
+            "receiver_id": receiver_id,
+            "sender_id":   sender_id,
+            "message":     message[:500],   # truncate for safety
+            "channel_id":  channel_id,
+        },
+    })
+ 
+ 
+def notify_user_mentioned(user_id: str, mentioned_by: str, message: str, channel_id: str = None) -> None:
+    _fire({
+        "event_type": "user_mentioned",
+        "payload": {
+            "user_id":     user_id,
+            "mentioned_by": mentioned_by,
+            "message":     message[:500],
+            "channel_id":  channel_id,
+        },
+    })
+
+
 
 # How often the client should send a heartbeat ping (seconds)
 PRESENCE_HEARTBEAT_INTERVAL = 30
