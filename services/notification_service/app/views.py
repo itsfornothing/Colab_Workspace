@@ -19,7 +19,6 @@ from rest_framework import status
 from django.utils import timezone
 
 from .models import Notification, NotificationEvent, NotificationPreference
-from .tasks import process_high_priority, process_low_priority, process_notification_event
 from .rate_limit import is_rate_limited
 
 logger = logging.getLogger(__name__)
@@ -27,6 +26,22 @@ logger = logging.getLogger(__name__)
 # Events that bypass normal queuing and go to the high-priority worker
 HIGH_PRIORITY_EVENTS = {"user_mentioned", "system_alert"}
 VALID_EVENT_TYPES = {"message_created", "user_invited", "user_mentioned", "system_alert"}
+
+
+def _process_event_sync(event):
+    """Process a notification event synchronously (no Celery required)."""
+    try:
+        from .handlers import dispatch_event
+        dispatch_event(event)
+        event.status = "completed"
+        event.processed = True
+        event.processed_at = timezone.now()
+        event.save(update_fields=["status", "processed", "processed_at"])
+    except Exception as e:
+        logger.exception("Failed to process event %s", event.id)
+        event.status = "failed"
+        event.error_message = str(e)
+        event.save(update_fields=["status", "error_message"])
 
 
 # ------------------------------------------------------------------ #
@@ -60,11 +75,10 @@ def create_event(request):
         payload=payload,
     )
 
-    # Route to priority queue
-    if event_type in HIGH_PRIORITY_EVENTS:
-        process_high_priority.delay(str(event.id))
-    else:
-        process_low_priority.delay(str(event.id))
+    # Process synchronously (no Celery needed for dev)
+    import threading
+    t = threading.Thread(target=_process_event_sync, args=(event,), daemon=True)
+    t.start()
 
     return Response({"status": "queued", "event_id": str(event.id)}, status=status.HTTP_201_CREATED)
 
@@ -106,6 +120,7 @@ def list_notifications(request):
                 "type": n.type,
                 "title": n.title,
                 "content": n.content,
+                "body": n.content,  # alias for Flutter compatibility
                 "is_read": n.is_read,
                 "priority": n.priority,
                 "metadata": n.metadata,

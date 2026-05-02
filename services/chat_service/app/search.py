@@ -1,15 +1,25 @@
 import logging
-from elasticsearch import Elasticsearch, NotFoundError
+import os
 
 logger = logging.getLogger(__name__)
-
-es = Elasticsearch("http://localhost:9200")
 
 INDEX = "messages"
 
 
+def _get_es():
+    try:
+        from elasticsearch import Elasticsearch
+        es_url = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
+        return Elasticsearch(es_url)
+    except ImportError:
+        return None
+
+
 def index_message(message):
     """Index or re-index a message document in Elasticsearch."""
+    es = _get_es()
+    if not es:
+        return
     doc = {
         "id": str(message.id),
         "channel_id": str(message.channel_id),
@@ -22,19 +32,21 @@ def index_message(message):
 
 def delete_message_doc(message_id):
     """Remove a message document from Elasticsearch."""
+    es = _get_es()
+    if not es:
+        return
     try:
+        from elasticsearch import NotFoundError
         es.delete(index=INDEX, id=str(message_id))
-    except NotFoundError:
-        pass  # Already gone — not an error
     except Exception:
-        logger.exception("Failed to delete ES doc for message %s", message_id)
+        pass
 
 
 def search_messages(query: str, channel_id: str) -> list:
-    """
-    Full-text search within a channel.
-    Uses the modern keyword-argument style (elasticsearch-py v8+).
-    """
+    """Full-text search within a channel."""
+    es = _get_es()
+    if not es:
+        return []
     response = es.search(
         index=INDEX,
         query={
@@ -45,6 +57,6 @@ def search_messages(query: str, channel_id: str) -> list:
                 ]
             }
         },
-        size=50,  # Cap results per request
+        size=50,
     )
     return [hit["_source"] for hit in response["hits"]["hits"]]

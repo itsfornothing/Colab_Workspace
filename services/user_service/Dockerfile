@@ -1,4 +1,10 @@
-FROM python:3.13.17-slim AS builder
+FROM python:3.13-slim AS builder
+
+# Install build dependencies including full C toolchain
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -8,7 +14,12 @@ RUN pip install --upgrade pip
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-FROM python:3.13.17-slim
+FROM python:3.13-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -M -r appuser && mkdir /app && chown -R appuser:appuser /app
 

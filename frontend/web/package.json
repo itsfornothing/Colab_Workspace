@@ -1,39 +1,47 @@
 {
-  "name": "web",
+  "name": "collab-web",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "zustand": "^4.5.5",
+    "@tanstack/react-query": "^5.56.2",
+    "axios": "^1.7.7",
+    "@tiptap/react": "^2.7.2",
+    "@tiptap/starter-kit": "^2.7.2",
+    "@tiptap/extension-collaboration": "^2.7.2",
+    "@tiptap/extension-collaboration-cursor": "^2.7.2",
+    "@tiptap/extension-placeholder": "^2.7.2",
+    "yjs": "^13.6.20",
+    "y-websocket": "^2.0.4",
+    "lucide-react": "^0.447.0",
+    "framer-motion": "^11.9.0",
+    "date-fns": "^4.1.0",
+    "react-hot-toast": "^2.4.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.3"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.8",
+    "tailwindcss": "^3.4.13",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@babel/preset-env": "^7.23.5",
+    "@babel/preset-react": "^7.23.3"
   }
 }

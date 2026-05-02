@@ -76,3 +76,13 @@ dist/
 **/.env.prod
 **/.env.development
 **/*.env
+
+# Kiro IDE files — never commit
+.kiro/
+.kiro_tmp/
+collab_workspace/
+
+# Python bytecode (catch any missed by earlier rules)
+**/__pycache__/
+**/*.pyc
+**/*.pyo

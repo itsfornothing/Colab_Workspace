@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   gateway:
     build:
@@ -24,6 +22,8 @@ services:
       context: ./services/user_service
       dockerfile: Dockerfile
     container_name: user-service
+    ports:
+      - '8001:8000'
     env_file:
       - ./services/user_service/.env.local
     environment:
@@ -39,15 +39,22 @@ services:
       context: ./services/chat_service
       dockerfile: Dockerfile
     container_name: chat-service
+    ports:
+      - '8002:8000'
     env_file:
       - ./services/chat_service/.env.local
     environment:
       DATABASE_HOST: chat-db
       DATABASE_PORT: 5432
       REDIS_URL: redis://redis:6379/0
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      DJANGO_SETTINGS_MODULE: chat_service.settings
+      DJANGO_ASGI_MODULE: chat_service.asgi:application
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,10.2.68.2,chat-service
     depends_on:
       - chat-db
       - redis
+      - elasticsearch
     networks:
       - collabnet
 
@@ -56,12 +63,20 @@ services:
       context: ./services/collaboration_service
       dockerfile: Dockerfile
     container_name: collaboration-service
+    ports:
+      - '8003:8000'
     env_file:
       - ./services/collaboration_service/.env.local
     environment:
       DATABASE_HOST: collaboration-db
       DATABASE_PORT: 5432
-      REDIS_URL: redis://redis:6379/0
+      # FIX: use correct env var names that settings.py expects
+      REDIS_CACHE_URL: redis://redis:6379/1
+      REDIS_CHANNEL_URL: redis://redis:6379/3
+      CELERY_BROKER_URL: redis://redis:6379/0
+      DJANGO_SETTINGS_MODULE: collaboration_service.settings
+      DJANGO_ASGI_MODULE: collaboration_service.asgi:application
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,10.2.68.2,collaboration-service
     depends_on:
       - collaboration-db
       - redis
@@ -73,6 +88,8 @@ services:
       context: ./services/media_service
       dockerfile: Dockerfile
     container_name: media-service
+    ports:
+      - '8004:8000'
     env_file:
       - ./services/media_service/.env.local
     environment:
@@ -90,6 +107,8 @@ services:
       context: ./services/notification_service
       dockerfile: Dockerfile
     container_name: notification-service
+    ports:
+      - '8005:8000'
     env_file:
       - ./services/notification_service/.env.local
     environment:
@@ -107,6 +126,8 @@ services:
       context: ./services/workspace_service
       dockerfile: Dockerfile
     container_name: workspace-service
+    ports:
+      - '8000:8000'
     env_file:
       - ./services/workspace_service/.env.local
     environment:
@@ -200,6 +221,20 @@ services:
     networks:
       - collabnet
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - '9200:9200'
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - collabnet
+
 volumes:
   user-db-data:
   chat-db-data:
@@ -208,6 +243,7 @@ volumes:
   notification-db-data:
   workspace-db-data:
   redis-data:
+  elasticsearch-data:
 
 networks:
   collabnet:

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     create_workspace, list_workspaces, workspace_detail,
-    workspace_members, membership_detail,
+    workspace_members, membership_detail, leave_workspace,
     invite_user, accept_invitation,
     create_invite_link, accept_invite_link,
     create_team, list_workspace_teams, team_members,
@@ -16,6 +16,7 @@ urlpatterns = [
     path("workspaces/list/",                         list_workspaces),          # GET
     path("workspaces/switch/",                       switch_workspace),         # POST
     path("workspaces/<uuid:workspace_id>/",          workspace_detail),         # GET, PATCH, DELETE
+    path("workspaces/<uuid:workspace_id>/leave/",    leave_workspace),          # POST
     path("workspaces/<uuid:workspace_id>/members/",  workspace_members),        # GET
     path("workspaces/<uuid:workspace_id>/teams/",    list_workspace_teams),     # GET
     path("workspaces/<uuid:workspace_id>/channels/", workspace_channels),       # GET, POST

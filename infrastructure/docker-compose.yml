@@ -1,0 +1,332 @@
+version: "3.9"
+
+# ============================================================
+# infrastructure/docker-compose.yml
+# Full production stack — all 6 services + infrastructure
+# ============================================================
+
+x-django-env: &django-env
+  DATABASE_ENGINE:       django.db.backends.postgresql
+  DATABASE_HOST:         postgres
+  DATABASE_PORT:         "5432"
+  REDIS_CACHE_URL:       redis://redis:6379/1
+  REDIS_CHANNEL_URL:     redis://redis:6379/3
+  CELERY_BROKER_URL:     redis://redis:6379/0
+  CELERY_RESULT_BACKEND: redis://redis:6379/2
+  REDIS_EVENT_BUS_URL:   redis://redis:6379/4
+  FRONTEND_URL:          ${FRONTEND_URL:-http://localhost:3000}
+  DEBUG:                 "0"
+
+x-django-base: &django-base
+  restart: unless-stopped
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  env_file:
+    - ../.env
+
+services:
+
+  # ── Nginx API Gateway ────────────────────────────────────
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../gateway/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../gateway/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ../gateway/nginx/proxy_params:/etc/nginx/proxy_params:ro
+      - ../gateway/nginx/proxy_ws:/etc/nginx/proxy_ws:ro
+      - ../certs:/etc/nginx/certs:ro
+      - ../frontend/web/build:/usr/share/nginx/html:ro
+      - nginx_cache:/var/cache/nginx
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - user-service
+      - workspace-service
+      - chat-service
+      - collaboration-service
+      - notification-service
+      - media-service
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ── User / Auth Service ──────────────────────────────────
+  user-service:
+    <<: *django-base
+    build:
+      context: ../services/user-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${USER_DB_NAME:-user_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      JWT_SECRET_KEY:         ${JWT_SECRET_KEY}
+      DEFAULT_FROM_EMAIL:     ${DEFAULT_FROM_EMAIL}
+      EMAIL_HOST:             ${EMAIL_HOST}
+      EMAIL_HOST_USER:        ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD:    ${EMAIL_HOST_PASSWORD}
+      DJANGO_SETTINGS_MODULE: user_service.settings
+      DJANGO_ASGI_MODULE:     user_service.asgi:application
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # ── Workspace Service ────────────────────────────────────
+  workspace-service:
+    <<: *django-base
+    build:
+      context: ../services/workspace-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${WORKSPACE_DB_NAME:-workspace_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      JWT_SECRET_KEY:         ${JWT_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: workspace_service.settings
+      DJANGO_ASGI_MODULE:     workspace_service.asgi:application
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # ── Chat Service ─────────────────────────────────────────
+  chat-service:
+    <<: *django-base
+    build:
+      context: ../services/chat-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${CHAT_DB_NAME:-chat_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      JWT_SECRET_KEY:         ${JWT_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: chat_service.settings
+      DJANGO_ASGI_MODULE:     chat_service.asgi:application
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # ── Collaboration Service ────────────────────────────────
+  collaboration-service:
+    <<: *django-base
+    build:
+      context: ../services/collaboration-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${COLLAB_DB_NAME:-collab_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      JWT_SECRET_KEY:         ${JWT_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: collaboration_service.settings
+      DJANGO_ASGI_MODULE:     collaboration_service.asgi:application
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # ── Notification Service ─────────────────────────────────
+  notification-service:
+    <<: *django-base
+    build:
+      context: ../services/notification-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${NOTIF_DB_NAME:-notification_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      JWT_SECRET_KEY:         ${JWT_SECRET_KEY}
+      FIREBASE_CREDENTIALS_PATH: /run/secrets/firebase_creds
+      DJANGO_SETTINGS_MODULE: notification_service.settings
+      DJANGO_ASGI_MODULE:     notification_service.asgi:application
+    expose:
+      - "8000"
+    secrets:
+      - firebase_creds
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # ── Media Service ────────────────────────────────────────
+  media-service:
+    <<: *django-base
+    build:
+      context: ../services/media-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${MEDIA_DB_NAME:-media_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      JWT_SECRET_KEY:         ${JWT_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: media_service.settings
+      DJANGO_ASGI_MODULE:     media_service.asgi:application
+    expose:
+      - "8000"
+    volumes:
+      - media_files:/app/mediafiles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+
+  # ── Celery Worker ────────────────────────────────────────
+  celery-worker:
+    <<: *django-base
+    build:
+      context: ../services/notification-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${NOTIF_DB_NAME:-notification_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: notification_service.settings
+      FIREBASE_CREDENTIALS_PATH: /run/secrets/firebase_creds
+    command: >
+      celery -A notification_service worker
+      --loglevel=info
+      --queues=high_priority,low_priority,celery
+      --concurrency=4
+    secrets:
+      - firebase_creds
+
+  # ── Celery Beat ──────────────────────────────────────────
+  celery-beat:
+    <<: *django-base
+    build:
+      context: ../services/notification-service
+      dockerfile: Dockerfile
+    environment:
+      <<: *django-env
+      DATABASE_NAME:          ${NOTIF_DB_NAME:-notification_db}
+      DATABASE_USERNAME:      ${DB_USER:-postgres}
+      DATABASE_PASSWORD:      ${DB_PASSWORD}
+      DJANGO_SECRET_KEY:      ${DJANGO_SECRET_KEY}
+      DJANGO_SETTINGS_MODULE: notification_service.settings
+    command: >
+      celery -A notification_service beat
+      --loglevel=info
+      --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+  # ── PostgreSQL ───────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER:     ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB:       postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    expose:
+      - "5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+    volumes:
+      - redis_data:/data
+    expose:
+      - "6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Prometheus ───────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+
+  # ── Grafana ──────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP:     "false"
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+# ── Volumes ──────────────────────────────────────────────
+volumes:
+  postgres_data:
+  redis_data:
+  media_files:
+  nginx_cache:
+  nginx_logs:
+  prometheus_data:
+  grafana_data:
+
+# ── Secrets ──────────────────────────────────────────────
+secrets:
+  firebase_creds:
+    file: ../secrets/firebase.json

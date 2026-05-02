@@ -63,8 +63,12 @@ def update_document(user, document_id, new_content: str) -> DocumentContent:
         raise PermissionError(f"User {user} cannot edit document {document_id}")
 
     with transaction.atomic():
-        content_obj = DocumentContent.objects.select_for_update().get(
-            document_id=document_id
+        # Use get_or_create so documents that were created before DocumentContent
+        # existed (or where the creation transaction partially failed) can still
+        # be saved without a 500 error.
+        content_obj, _ = DocumentContent.objects.select_for_update().get_or_create(
+            document_id=document_id,
+            defaults={"content": "", "last_edited_by": user},
         )
 
         # BUG FIX: use MAX instead of COUNT to avoid duplicate version numbers
@@ -109,7 +113,14 @@ def list_documents(user, workspace_id) -> list:
 
 
 def archive_document(user, document_id) -> None:
-    if not has_permission(user, document_id, "admin"):
+    # Allow the document creator to archive even if no explicit permission record exists
+    try:
+        doc = Document.objects.get(id=document_id)
+    except Document.DoesNotExist:
+        raise PermissionError(f"Document {document_id} not found")
+
+    is_creator = doc.created_by_id and str(doc.created_by_id) == str(user.id)
+    if not is_creator and not has_permission(user, document_id, "admin"):
         raise PermissionError(f"User {user} cannot archive document {document_id}")
     Document.objects.filter(id=document_id).update(is_archived=True)
 

@@ -43,6 +43,9 @@ def create_workspace(request):
     workspace = create_workspace_service(
         request.user, name, request.data.get("description", "")
     )
+    # Invalidate the cached workspace list so the next GET /workspaces/list/
+    # returns fresh data that includes the newly created workspace.
+    cache.delete(f"user_workspaces_{request.user.id}")
     return Response(
         {"message": "Workspace created.", "workspace": WorkspaceSerializer(workspace).data},
         status=status.HTTP_201_CREATED,
@@ -125,6 +128,23 @@ def workspace_members(request, workspace_id):
     return Response(MembershipSerializer(qs, many=True).data)
  
  
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def leave_workspace(request, workspace_id):
+    workspace = get_object_or_404(Workspace, id=workspace_id)
+    membership = Membership.objects.filter(user=request.user, workspace=workspace).first()
+    if not membership:
+        raise PermissionDenied({"detail": "Not a member."})
+
+    # Prevent the owner from leaving
+    if workspace.owner == request.user:
+        raise ValidationError({"detail": "Workspace owner cannot leave. Transfer ownership first."})
+
+    membership.delete()
+    cache.delete(f"user_workspaces_{request.user.id}")
+    return Response({"message": "Left workspace."})
+
+
 @api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
 def membership_detail(request, membership_id):

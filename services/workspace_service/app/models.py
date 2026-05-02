@@ -2,8 +2,12 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
- 
+
 User = settings.AUTH_USER_MODEL
+
+
+def _uuid_hex():
+    return uuid.uuid4().hex
  
  
 # ------------------------------------------------------------------ #
@@ -74,7 +78,7 @@ class Invitation(models.Model):
     invited_by  = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_invitations")
     # CharField token avoids UUID hyphen URL-routing issues
     token       = models.CharField(max_length=64, unique=True, db_index=True,
-                                   default=lambda: uuid.uuid4().hex)
+                                   default=_uuid_hex)
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
     created_at  = models.DateTimeField(auto_now_add=True)
     expires_at  = models.DateTimeField()
@@ -89,7 +93,7 @@ class WorkspaceInviteLink(models.Model):
     workspace  = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name="invite_links")
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     token      = models.CharField(max_length=64, unique=True, db_index=True,
-                                  default=lambda: uuid.uuid4().hex)
+                                  default=_uuid_hex)
     role       = models.CharField(max_length=10, choices=Membership.ROLE_CHOICES, default="member")
     max_uses   = models.PositiveIntegerField(null=True, blank=True)
     use_count  = models.PositiveIntegerField(default=0)

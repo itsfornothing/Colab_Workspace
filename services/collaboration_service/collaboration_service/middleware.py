@@ -25,12 +25,12 @@ User = get_user_model()
 @database_sync_to_async
 def get_user_from_token(token: str):
     try:
-        # Fast path: user_id cached in Redis
-        cached_user_id = cache.get(f"ws_session:{token}")
-        if cached_user_id:
-            return User.objects.get(id=cached_user_id)
+        # Fast path: local Django PK cached in Redis
+        cached_pk = cache.get(f"ws_session:{token}")
+        if cached_pk:
+            return User.objects.get(pk=cached_pk)
 
-        # Validate token (raises on expiry / bad signature)
+        # Validate token signature and expiry (raises on failure)
         UntypedToken(token)
 
         decoded = jwt_decode(
@@ -38,12 +38,22 @@ def get_user_from_token(token: str):
             settings.SIMPLE_JWT["SIGNING_KEY"],
             algorithms=[settings.SIMPLE_JWT.get("ALGORITHM", "HS256")],
         )
-        user_id = decoded.get("user_id")
+        # user_id in the JWT is the UUID from user-service, stored as the
+        # local shadow user's *username* (see RemoteUserJWTAuthentication).
+        # We must NOT do User.objects.get(id=user_id) — that would try to
+        # cast the UUID string to an integer PK and raise TypeError.
+        user_id = str(decoded.get("user_id", ""))
         if not user_id:
             return AnonymousUser()
 
-        user = User.objects.get(id=user_id)
-        cache.set(f"ws_session:{token}", user.id, timeout=300)
+        user, _ = User.objects.get_or_create(
+            username=user_id,
+            defaults={
+                "email": decoded.get("email", f"{user_id}@remote"),
+                "is_active": True,
+            },
+        )
+        cache.set(f"ws_session:{token}", user.pk, timeout=300)
         return user
 
     except (InvalidToken, TokenError, User.DoesNotExist, Exception):

@@ -16,12 +16,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "0") == "1"
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(", ")
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",") if h.strip()]
 
 # BUG FIX: was split(".") — multi-origin strings would be mangled.
-CSRF_TRUSTED_ORIGINS = os.getenv(
+CSRF_TRUSTED_ORIGINS = [h.strip() for h in os.getenv(
     "DJANGO_CSRF_TRUSTED_ORIGINS", "https://127.0.0.1"
-).split(", ")
+).split(",") if h.strip()]
 
 # ---------------------------------------------------------------------------
 # Applications
@@ -83,10 +83,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                os.getenv("REDIS_URL_1", "redis://redis-1:6379/0"),
-                os.getenv("REDIS_URL_2", "redis://redis-2:6379/0"),
+                os.getenv("REDIS_CHANNEL_URL",
+                          os.getenv("REDIS_URL_1", "redis://redis:6379/3")),
             ],
-            # Increase capacity and expiry for high-traffic documents
             "capacity": 1500,
             "expiry": 10,
         },
@@ -100,7 +99,7 @@ CHANNEL_LAYERS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_CACHE_URL", "redis://redis-1:6379/1"),
+        "LOCATION": os.getenv("REDIS_CACHE_URL", "redis://redis:6379/1"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -128,7 +127,7 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'app.authentication.RemoteUserJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -167,5 +166,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "mediafiles"
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8005")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

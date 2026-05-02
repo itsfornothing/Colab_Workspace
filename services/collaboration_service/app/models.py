@@ -155,8 +155,6 @@ class DocumentComment(models.Model):
         "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
     )
     content = models.TextField()
-    # Yjs anchor: serialised position reference so the comment tracks its
-    # location as the document is edited
     anchor = models.JSONField(null=True, blank=True)
     resolved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -164,3 +162,73 @@ class DocumentComment(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+
+
+# ─────────────────────────────────────────────
+# Tasks
+# ─────────────────────────────────────────────
+
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ("todo", "To Do"),
+        ("in_progress", "In Progress"),
+        ("review", "In Review"),
+        ("done", "Done"),
+    ]
+    PRIORITY_CHOICES = [
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("urgent", "Urgent"),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    workspace_id = models.UUIDField(db_index=True)
+    title = models.CharField(max_length=500)
+    description = models.TextField(blank=True, default="")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="todo")
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="medium")
+    assignee_id = models.UUIDField(null=True, blank=True, db_index=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="created_tasks"
+    )
+    due_date = models.DateField(null=True, blank=True)
+    # Tracks whether the due-date notification has already been sent,
+    # so the periodic check never fires it twice.
+    due_date_notified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["workspace_id", "status"]),
+            models.Index(fields=["assignee_id"]),
+        ]
+
+    def __str__(self):
+        return self.title
+
+
+# ─────────────────────────────────────────────
+# Workspace Files
+# ─────────────────────────────────────────────
+
+class WorkspaceFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    workspace_id = models.UUIDField(db_index=True)
+    name = models.CharField(max_length=500)
+    file_url = models.URLField(max_length=1000)
+    file_size = models.PositiveBigIntegerField(default=0)
+    mime_type = models.CharField(max_length=200, blank=True, default="")
+    uploaded_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, related_name="uploaded_files"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["workspace_id"])]
+
+    def __str__(self):
+        return self.name
