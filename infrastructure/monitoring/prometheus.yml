@@ -1,0 +1,137 @@
+# ============================================================
+# infrastructure/monitoring/prometheus.yml
+#
+# Scrapes metrics from all 6 Django services, Redis, Nginx,
+# Celery, and the host node.
+#
+# Each Django service must have django-prometheus installed:
+#   pip install django-prometheus
+#
+# In each service's settings.py add:
+#   INSTALLED_APPS += ['django_prometheus']
+#
+#   MIDDLEWARE = [
+#       'django_prometheus.middleware.PrometheusBeforeMiddleware',
+#       ... (existing middleware) ...
+#       'django_prometheus.middleware.PrometheusAfterMiddleware',
+#   ]
+#
+# In each service's urls.py add:
+#   from django.urls import include
+#   urlpatterns += [path('', include('django_prometheus.urls'))]
+#
+# This exposes /metrics on each service at port 8000.
+# ============================================================
+
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+    env:     production
+    project: collab-workspace
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+rule_files: []
+
+scrape_configs:
+
+  # ── Prometheus self-monitoring ────────────────────────────
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # ── Django services (/metrics via django-prometheus) ─────
+  - job_name: user_service
+    static_configs:
+      - targets: ["user-service:8000"]
+    metrics_path: /metrics
+
+  - job_name: workspace_service
+    static_configs:
+      - targets: ["workspace-service:8000"]
+    metrics_path: /metrics
+
+  - job_name: chat_service
+    static_configs:
+      - targets: ["chat-service:8000"]
+    metrics_path: /metrics
+
+  - job_name: collaboration_service
+    static_configs:
+      - targets: ["collaboration-service:8000"]
+    metrics_path: /metrics
+
+  - job_name: notification_service
+    static_configs:
+      - targets: ["notification-service:8000"]
+    metrics_path: /metrics
+
+  - job_name: media_service
+    static_configs:
+      - targets: ["media-service:8000"]
+    metrics_path: /metrics
+
+  # ── Redis (via redis_exporter sidecar) ───────────────────
+  # Add this to docker-compose.yml to enable:
+  #   redis-exporter:
+  #     image: oliver006/redis_exporter:latest
+  #     environment:
+  #       REDIS_ADDR: redis://redis:6379
+  #     expose: ["9121"]
+  - job_name: redis
+    static_configs:
+      - targets: ["redis-exporter:9121"]
+
+  # ── Nginx (via nginx-prometheus-exporter sidecar) ────────
+  # Add to docker-compose.yml:
+  #   nginx-exporter:
+  #     image: nginx/nginx-prometheus-exporter:latest
+  #     command: -nginx.scrape-uri=http://nginx/stub_status
+  #     expose: ["9113"]
+  # And add this to nginx.conf inside the server block:
+  #   location /stub_status { stub_status; allow 127.0.0.1; deny all; }
+  - job_name: nginx
+    static_configs:
+      - targets: ["nginx-exporter:9113"]
+
+  # ── Celery (via celery-exporter sidecar) ─────────────────
+  # Add to docker-compose.yml:
+  #   celery-exporter:
+  #     image: danihodovic/celery-exporter:latest
+  #     environment:
+  #       CE_BROKER_URL: redis://redis:6379/0
+  #     expose: ["9808"]
+  - job_name: celery
+    static_configs:
+      - targets: ["celery-exporter:9808"]
+
+  # ── PostgreSQL (via postgres_exporter sidecar) ───────────
+  # Add to docker-compose.yml:
+  #   postgres-exporter:
+  #     image: prometheuscommunity/postgres-exporter:latest
+  #     environment:
+  #       DATA_SOURCE_NAME: "postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/postgres?sslmode=disable"
+  #     expose: ["9187"]
+  - job_name: postgres
+    static_configs:
+      - targets: ["postgres-exporter:9187"]
+
+  # ── Node / host system metrics ────────────────────────────
+  # Add to docker-compose.yml:
+  #   node-exporter:
+  #     image: prom/node-exporter:latest
+  #     expose: ["9100"]
+  #     volumes:
+  #       - /proc:/host/proc:ro
+  #       - /sys:/host/sys:ro
+  #       - /:/rootfs:ro
+  #     command:
+  #       - '--path.procfs=/host/proc'
+  #       - '--path.sysfs=/host/sys'
+  - job_name: node
+    static_configs:
+      - targets: ["node-exporter:9100"]

@@ -1,0 +1,119 @@
+version: '3.9'
+
+# ============================================================
+# docker-compose.yml — collaboration-service (local dev)
+#
+# FIXES vs original:
+#
+# 1. NO HEALTHCHECKS on db/redis → race condition.
+#    Original used "depends_on: [db, redis]" which only waits
+#    for the container to START, not for Postgres to be READY.
+#    Postgres takes 2–4s to initialise after the container starts.
+#    Meanwhile the service tries to migrate, gets "connection refused"
+#    from Postgres (not the Flutter client), the entrypoint exits,
+#    and the container stops. Docker shows it as "running" briefly
+#    then it enters a restart loop. During the window between
+#    container start and restart, port 8003 may be bound at the
+#    Docker network level but nothing inside accepts connections.
+#    FIX: healthchecks + "condition: service_healthy" on depends_on.
+#
+# 2. REDIS_URL was set but settings.py expects REDIS_CACHE_URL and
+#    REDIS_CHANNEL_URL on separate DBs. The channel layer getting
+#    the wrong Redis DB causes group_send to silently drop messages.
+#    FIX: set the correct env var names.
+#
+# 3. DJANGO_ASGI_MODULE not set — entrypoint.prod.sh now requires
+#    this to know which ASGI app to launch.
+#
+# 4. DJANGO_SETTINGS_MODULE not set — Django may load the wrong
+#    settings if the project has multiple settings files.
+#
+# 5. Hardcoded password in plain text.
+#    FIX: read from .env.local via env_file (which is already there)
+#    and reference as a variable. Set DATABASE_PASSWORD in .env.local.
+# ============================================================
+
+services:
+  collaboration-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: collaboration-service
+    env_file:
+      - .env.local
+    environment:
+      DATABASE_HOST:          db
+      DATABASE_PORT:          "5432"
+      DATABASE_NAME:          ${DATABASE_NAME:-collaboration}
+      DATABASE_USERNAME:      ${DATABASE_USERNAME:-root}
+      DATABASE_PASSWORD:      ${DATABASE_PASSWORD}
+
+      # FIX: correct env var names expected by Django settings
+      REDIS_CACHE_URL:        redis://redis:6379/1
+      REDIS_CHANNEL_URL:      redis://redis:6379/3
+      CELERY_BROKER_URL:      redis://redis:6379/0
+
+      DJANGO_ALLOWED_HOSTS:        localhost,127.0.0.1,10.2.68.2,collaboration-service
+      DJANGO_CSRF_TRUSTED_ORIGINS: http://localhost:8003,http://10.2.68.2:8003
+
+      # FIX: tell entrypoint.prod.sh which ASGI app to start
+      DJANGO_SETTINGS_MODULE: collaboration_service.settings
+      DJANGO_ASGI_MODULE:     collaboration_service.asgi:application
+
+    ports:
+      - '8003:8000'
+    depends_on:
+      db:
+        condition: service_healthy      # FIX: wait for Postgres to be ready
+      redis:
+        condition: service_healthy      # FIX: wait for Redis to be ready
+    restart: unless-stopped
+    volumes:
+      - static:/app/staticfiles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s    # give the service time to migrate on first boot
+      retries: 3
+
+  db:
+    image: postgres:16-alpine
+    container_name: collaboration-db
+    environment:
+      POSTGRES_DB:       ${DATABASE_NAME:-collaboration}
+      POSTGRES_USER:     ${DATABASE_USERNAME:-root}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}   # set in .env.local
+    # No host port mapping — only the collaboration-service container
+    # needs to reach this DB, and it does so via the Docker network.
+    # Exposing 5432 on the host conflicts with a local Postgres instance.
+    volumes:
+      - collaboration-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    # FIX: healthcheck so depends_on knows when Postgres is actually ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: collaboration-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    # FIX: healthcheck so depends_on knows when Redis is ready
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  collaboration-db-data:
+  static:
+  redis-data:

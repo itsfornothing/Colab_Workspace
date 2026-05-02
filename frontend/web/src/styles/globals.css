@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ── */
+:root {
+  --color-primary:        #6366F1;
+  --color-primary-hover:  #4F46E5;
+  --color-primary-light:  #EEF2FF;
+  --color-primary-dark:   #818CF8;
+
+  --color-bg-base:        #F8FAFC;
+  --color-bg-panel:       #F1F5F9;
+  --color-bg-elevated:    #FFFFFF;
+
+  --color-text-heading:   #0F172A;
+  --color-text-body:      #475569;
+  --color-text-hint:      #94A3B8;
+
+  --color-border:         #E2E8F0;
+  --color-border-focus:   #6366F1;
+
+  --color-success:        #10B981;
+  --color-warning:        #F59E0B;
+  --color-danger:         #EF4444;
+
+  --color-online:         #10B981;
+  --color-away:           #F59E0B;
+  --color-dnd:            #EF4444;
+  --color-offline:        #94A3B8;
+
+  --shadow-card:          0 2px 12px rgba(0,0,0,0.06);
+  --shadow-modal:         0 8px 40px rgba(0,0,0,0.14);
+  --shadow-dropdown:      0 4px 20px rgba(0,0,0,0.10);
+
+  --radius-sm:    6px;
+  --radius-md:    10px;
+  --radius-lg:    14px;
+  --radius-xl:    20px;
+  --radius-full:  9999px;
+}
+
+[data-theme="dark"] {
+  --color-primary:        #818CF8;
+  --color-primary-hover:  #6366F1;
+  --color-primary-light:  #1E1B4B;
+
+  --color-bg-base:        #060E20;
+  --color-bg-panel:       #091328;
+  --color-bg-elevated:    #0F1E35;
+
+  --color-text-heading:   #DEE5FF;
+  --color-text-body:      #A3AAC4;
+  --color-text-hint:      #5B6278;
+
+  --color-border:         #1E293B;
+  --color-border-focus:   #818CF8;
+
+  --shadow-card:          0 2px 12px rgba(0,0,0,0.4);
+  --shadow-modal:         0 8px 40px rgba(0,0,0,0.6);
+  --shadow-dropdown:      0 4px 20px rgba(0,0,0,0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography helpers */
+.text-h1 { font-size: 24px; font-weight: 700; line-height: 1.25; color: var(--color-text-heading); }
+.text-h2 { font-size: 20px; font-weight: 600; line-height: 1.3;  color: var(--color-text-heading); }
+.text-h3 { font-size: 16px; font-weight: 600; line-height: 1.4;  color: var(--color-text-heading); }
+.text-body { font-size: 15px; font-weight: 400; line-height: 1.6; }
+.text-sm   { font-size: 13px; font-weight: 400; line-height: 1.5; }
+.text-xs   { font-size: 11px; font-weight: 500; letter-spacing: 0.04em; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-hint); }
+
+/* Spinner */
+.spinner {
+  width: 24px; height: 24px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Video call performance optimizations (Requirement 11.5) ── */
+
+/**
+ * GPU-accelerated video tile positioning.
+ * Using CSS transforms (translate3d) instead of top/left/margin positioning
+ * promotes the element to its own compositor layer, enabling the GPU to
+ * handle repaints independently and maintain smooth 30fps+ rendering.
+ */
+.video-tile {
+  /* Promote to GPU compositor layer */
+  transform: translateZ(0);
+  will-change: transform;
+  /* Prevent subpixel rendering artifacts */
+  backface-visibility: hidden;
+  /* Smooth transitions when grid layout changes */
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+/**
+ * Video element rendering optimizations.
+ * object-fit: cover is GPU-accelerated in modern browsers.
+ * contain: strict prevents layout/paint from propagating outside the tile.
+ */
+.video-tile video {
+  /* GPU-accelerated scaling */
+  transform: translateZ(0);
+  will-change: transform;
+  /* Prevent layout thrashing from video resize events */
+  contain: strict;
+}
+
+/**
+ * Off-screen / lazy video tile.
+ * When a tile is not visible (IntersectionObserver reports not intersecting),
+ * we hide it cheaply using opacity + pointer-events rather than display:none,
+ * which would cause a layout recalculation.
+ */
+.video-tile--offscreen {
+  opacity: 0;
+  pointer-events: none;
+  /* Keep the element in the layout flow so the grid doesn't reflow */
+  visibility: hidden;
+}
+
+/**
+ * Video grid container.
+ * contain: layout prevents grid recalculations from affecting the rest of
+ * the page, reducing the scope of layout work on each frame.
+ */
+.video-grid {
+  contain: layout style;
+}
+
+/**
+ * Smooth grid layout transitions.
+ * When participant count changes and the grid reflows, tiles animate
+ * into their new positions using CSS transforms (GPU-accelerated).
+ */
+.video-grid-enter {
+  opacity: 0;
+  transform: scale(0.95) translateZ(0);
+}
+.video-grid-enter-active {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.video-grid-exit {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+}
+.video-grid-exit-active {
+  opacity: 0;
+  transform: scale(0.95) translateZ(0);
+  transition: opacity 200ms ease, transform 200ms ease;
+}

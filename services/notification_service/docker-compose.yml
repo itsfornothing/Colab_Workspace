@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notification-service
+    env_file:
+      - .env.local
+    environment:
+      # Override database host for Docker Compose networking
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+      DJANGO_ALLOWED_HOSTS: localhost
+      DJANGO_CSRF_TRUSTED_ORIGINS: http://localhost:8000
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    volumes:
+      - static:/app/staticfiles
+
+  db:
+    image: postgres:16-alpine
+    container_name: notification-db
+    environment:
+      POSTGRES_DB: collaboration_notification
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 'Haha123@&$'
+    ports:
+      - '5432:5432'
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: notification-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  notification-db-data:
+  static:
+  redis-data:
