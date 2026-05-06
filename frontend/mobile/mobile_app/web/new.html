@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Workspace Ready | Collaborative Canvas</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#904900",
+                    "surface-tint": "#494bd6",
+                    "surface-dim": "#d8dadc",
+                    "primary-container": "#6063ee",
+                    "surface-container": "#eceef0",
+                    "primary": "#4648d4",
+                    "outline-variant": "#c7c4d7",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#fffbff",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary-fixed": "#13144a",
+                    "on-surface": "#191c1e",
+                    "on-background": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#b55d00",
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-tertiary-fixed": "#301400",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "surface": "#f7f9fb",
+                    "on-primary-fixed": "#07006c",
+                    "on-secondary-fixed-variant": "#404178",
+                    "on-surface-variant": "#464554",
+                    "secondary": "#575992",
+                    "inverse-primary": "#c0c1ff",
+                    "primary-fixed": "#e1e0ff",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "outline": "#767586",
+                    "secondary-fixed": "#e1e0ff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-container": "#bdbefe",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e6e8ea",
+                    "tertiary-fixed": "#ffdcc5",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary-container": "#494b83",
+                    "on-tertiary-container": "#fffbff",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<nav class="flex justify-between items-center px-6 h-16 w-full top-0 bg-white dark:bg-slate-900 sticky z-50">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 mr-2" data-icon="close">close</span>
+<span class="font-manrope font-bold text-lg text-slate-900 dark:text-slate-100">Getting Started</span>
+</div>
+<div class="flex items-center space-x-1">
+<span class="font-manrope font-extrabold text-xl text-slate-900 dark:text-slate-100">Canvas</span>
+</div>
+</nav>
+<main class="min-h-screen flex flex-col px-6 pt-4 pb-32 max-w-md mx-auto">
+<!-- Progress Indicator -->
+<div class="fixed bottom-0 left-0 w-full z-50 flex justify-center space-x-2 pb-12 bg-transparent pointer-events-none">
+<div class="flex items-center justify-center bg-slate-200 dark:bg-slate-700 w-2 h-2 rounded-full"></div>
+<div class="flex items-center justify-center bg-slate-200 dark:bg-slate-700 w-2 h-2 rounded-full"></div>
+<div class="flex items-center justify-center bg-indigo-600 dark:bg-indigo-500 w-8 h-2 rounded-full"></div>
+</div>
+<!-- Success Illustration & Header -->
+<div class="mt-4 mb-8 text-center">
+<div class="relative w-full aspect-square mb-6 overflow-hidden rounded-xl bg-surface-container-low flex items-center justify-center">
+<img alt="Success Workspace" class="w-full h-full object-cover" data-alt="abstract digital workstation with glowing purple neon elements, floating geometric shapes, and a futuristic minimalist aesthetic in soft indigo lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE7lia5ELhWCdAKMLAYhhwqcsYv9bDDQ5Ee9c0ySxIvTN_kyTG0nZ3grwbQfrhhoUB-JiY4SFtvxVmrjK4cavjSuVvTdSzKUPrEb37rcV-soCoHDAEXTeXSmccFT6hYkSiCRHbXM6h5pBXforQDVVud5OfQtLD0FDNKLx5UL1U32EKUfWo6-6_Vm5Lk5g8Kbu2siLmyJmbm-GydkcK2FImmueJAnZ4lCbNCJ9yaenCvYbCrMnWDsXw0dzl4vkoePsNBy8XVK20qhrL"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent"></div>
+<!-- Glassmorphism badge -->
+<div class="absolute bottom-4 right-4 glass-panel px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-headline font-bold text-sm text-on-surface">Ready to go</span>
+</div>
+</div>
+<h1 class="font-headline font-extrabold text-3xl text-on-surface tracking-tight mb-2">Your Workspace Awaits</h1>
+<p class="text-on-surface-variant font-medium">Everything is set up. Your creative sanctuary is ready for its first collaborative stroke.</p>
+</div>
+<!-- Feature Recap Grid (Asymmetric Layout) -->
+<div class="grid grid-cols-2 gap-4 mb-10">
+<div class="col-span-2 bg-surface-container-lowest p-5 rounded-xl flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Centralized Hub</h3>
+<p class="text-sm text-on-surface-variant">All tools connected in one flow.</p>
+</div>
+</div>
+<div class="bg-surface-container p-5 rounded-xl flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="groups">groups</span>
+<p class="font-headline font-bold text-on-surface leading-tight">Live Co-Editing</p>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="auto_awesome">auto_awesome</span>
+<p class="font-headline font-bold text-on-surface leading-tight">AI Insights</p>
+</div>
+</div>
+<!-- Call to Action Section -->
+<div class="space-y-4">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold py-4 px-6 rounded-xl text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all duration-150 flex items-center justify-center gap-2">
+                Launch Your Canvas
+                <span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+</button>
+<div class="text-center pt-2">
+<p class="text-on-surface-variant text-sm font-medium">
+                    Already have an account? 
+                    <a class="text-primary font-bold hover:underline" href="#">Sign in</a>
+</p>
+</div>
+</div>
+<!-- Floating Decorative Element (Architectural Flow) -->
+<div class="mt-12 flex justify-center opacity-30">
+<div class="h-px w-24 bg-gradient-to-r from-transparent via-outline to-transparent"></div>
+</div>
+<div class="mt-8 text-center opacity-50">
+<p class="text-[10px] uppercase tracking-widest font-bold text-outline">Collaborative Canvas v2.4</p>
+</div>
+</main>
+<!-- Contextual "Help" FAB - Suppressed per rules but shown as a ghost for detail -->
+<!-- (Hidden as per Contextual FAB Suppression for onboarding screens) -->
+</body></html>
