@@ -36,6 +36,7 @@ User = get_user_model()
 def _get_jwt_token(user):
     """Generate a valid JWT access token for the given user."""
     refresh = RefreshToken.for_user(user)
+    refresh["user_id"] = user.username
     return str(refresh.access_token)
 
 
