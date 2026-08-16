@@ -61,4 +61,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
-        run: python manage.py test --no-input
+        run: |
+          if [ "${{ matrix.service }}" = "collaboration_service" ]; then
+            python -m pytest
+          else
+            python manage.py test --no-input
+          fi
