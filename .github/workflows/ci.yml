@@ -32,6 +32,21 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Create test env
+        run: |
+          cat > .env.local <<'EOF'
+          DEBUG=True
+          DJANGO_SECRET_KEY=ci-secret-key
+          DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+          DATABASE_ENGINE=django.db.backends.sqlite3
+          DATABASE_NAME=db.sqlite3
+          DATABASE_USERNAME=
+          DATABASE_PASSWORD=
+          DATABASE_HOST=
+          DATABASE_PORT=
+          JWT_SECRET_KEY=ci-jwt-secret
+          EOF
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
