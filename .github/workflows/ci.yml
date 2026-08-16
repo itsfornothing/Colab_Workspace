@@ -9,6 +9,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
     strategy:
       fail-fast: false
       matrix:
@@ -45,6 +50,9 @@ jobs:
           DATABASE_HOST=
           DATABASE_PORT=
           JWT_SECRET_KEY=ci-jwt-secret
+          REDIS_URL=redis://localhost:6379/0
+          REDIS_CACHE_URL=redis://localhost:6379/1
+          REDIS_CHANNEL_URL=redis://localhost:6379/2
           EOF
 
       - name: Install dependencies
