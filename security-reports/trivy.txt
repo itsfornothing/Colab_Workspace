@@ -8,8 +8,6 @@ Report Summary
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ colaba/chat_service:ci (debian 13.6)                                             │   debian   │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ Python                                                                           │ python-pkg │        2        │    -    │
-├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/anyio-4.14.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/asgiref-3.12.1.dist-info/METADATA         │ python-pkg │        0        │    -    │
@@ -156,31 +154,6 @@ Legend:
 - '0': Clean (no security findings detected)
 
 
-For OSS Maintainers: VEX Notice
---------------------------------
-If you're an OSS maintainer and Trivy has detected vulnerabilities in your project that you believe are not actually exploitable, consider issuing a VEX (Vulnerability Exploitability eXchange) statement.
-VEX allows you to communicate the actual status of vulnerabilities in your project, improving security transparency and reducing false positives for your users.
-Learn more and start using VEX: https://trivy.dev/docs/v0.70/guide/supply-chain/vex/repo#publishing-vex-documents
-
-To disable this notice, set the TRIVY_DISABLE_VEX_NOTICE environment variable.
-
-
-Python (python-pkg)
-===================
-Total: 2 (HIGH: 2, CRITICAL: 0)
-
-┌────────────┬─────────────────────┬──────────┬────────┬───────────────────┬───────────────┬────────────────────────────────────────────────────────┐
-│  Library   │    Vulnerability    │ Severity │ Status │ Installed Version │ Fixed Version │                         Title                          │
-├────────────┼─────────────────────┼──────────┼────────┼───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
-│ msgpack    │ GHSA-6v7p-g79w-8964 │ HIGH     │ fixed  │ 1.1.2             │ 1.2.1         │ MessagePack for Python: Out-of-bounds read / crash on  │
-│            │                     │          │        │                   │               │ Unpacker reuse after a...                              │
-│            │                     │          │        │                   │               │ https://github.com/advisories/GHSA-6v7p-g79w-8964      │
-├────────────┼─────────────────────┤          │        ├───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
-│ setuptools │ CVE-2025-47273      │          │        │ 70.3.0            │ 78.1.1        │ setuptools: Path Traversal Vulnerability in setuptools │
-│            │                     │          │        │                   │               │ PackageIndex                                           │
-│            │                     │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-47273             │
-└────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────┴────────────────────────────────────────────────────────┘
-
 ================ report-collaboration_service.txt ================
 
 Report Summary
@@ -189,8 +162,6 @@ Report Summary
 │                                      Target                                      │    Type    │ Vulnerabilities │ Secrets │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ colaba/collaboration_service:ci (debian 13.6)                                    │   debian   │        0        │    -    │
-├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ Python                                                                           │ python-pkg │        2        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/PyYAML-6.0.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
@@ -353,31 +324,6 @@ Legend:
 - '-': Not scanned
 - '0': Clean (no security findings detected)
 
-
-For OSS Maintainers: VEX Notice
---------------------------------
-If you're an OSS maintainer and Trivy has detected vulnerabilities in your project that you believe are not actually exploitable, consider issuing a VEX (Vulnerability Exploitability eXchange) statement.
-VEX allows you to communicate the actual status of vulnerabilities in your project, improving security transparency and reducing false positives for your users.
-Learn more and start using VEX: https://trivy.dev/docs/v0.70/guide/supply-chain/vex/repo#publishing-vex-documents
-
-To disable this notice, set the TRIVY_DISABLE_VEX_NOTICE environment variable.
-
-
-Python (python-pkg)
-===================
-Total: 2 (HIGH: 2, CRITICAL: 0)
-
-┌────────────┬─────────────────────┬──────────┬────────┬───────────────────┬───────────────┬────────────────────────────────────────────────────────┐
-│  Library   │    Vulnerability    │ Severity │ Status │ Installed Version │ Fixed Version │                         Title                          │
-├────────────┼─────────────────────┼──────────┼────────┼───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
-│ msgpack    │ GHSA-6v7p-g79w-8964 │ HIGH     │ fixed  │ 1.1.2             │ 1.2.1         │ MessagePack for Python: Out-of-bounds read / crash on  │
-│            │                     │          │        │                   │               │ Unpacker reuse after a...                              │
-│            │                     │          │        │                   │               │ https://github.com/advisories/GHSA-6v7p-g79w-8964      │
-├────────────┼─────────────────────┤          │        ├───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
-│ setuptools │ CVE-2025-47273      │          │        │ 70.3.0            │ 78.1.1        │ setuptools: Path Traversal Vulnerability in setuptools │
-│            │                     │          │        │                   │               │ PackageIndex                                           │
-│            │                     │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-47273             │
-└────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────┴────────────────────────────────────────────────────────┘
 
 ================ report-gateway.txt ================
 
