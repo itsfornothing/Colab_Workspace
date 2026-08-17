@@ -39,16 +39,16 @@ Report Summary
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/cryptography-50.0.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/daphne-4.1.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/daphne-4.2.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/django-5.1.15.dist-info/METADATA          │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/django-5.2.17.dist-info/METADATA          │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/django_redis-5.4.0.dist-info/METADATA     │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/djangorestframework-3.15.2.dist-info/MET- │ python-pkg │        0        │    -    │
 │ ADATA                                                                            │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.3.1.dist- │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.5.1.dist- │ python-pkg │        0        │    -    │
 │ -info/METADATA                                                                   │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/gunicorn-23.0.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
@@ -79,13 +79,13 @@ Report Summary
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/pyopenssl-26.4.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/python_dotenv-1.0.1.dist-info/METADATA    │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/python_dotenv-1.2.2.dist-info/METADATA    │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/pyyaml-6.0.3.dist-info/METADATA           │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/redis-5.0.8.dist-info/METADATA            │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/requests-2.32.3.dist-info/METADATA        │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/requests-2.33.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/service_identity-26.1.0.dist-info/METADA- │ python-pkg │        0        │    -    │
 │ TA                                                                               │            │                 │         │
@@ -129,6 +129,221 @@ To disable this notice, set the TRIVY_DISABLE_VEX_NOTICE environment variable.
 
 colaba/chat_service:ci (debian 13.6)
 ====================================
+Total: 9 (HIGH: 9, CRITICAL: 0)
+
+┌───────────────┬────────────────┬──────────┬────────┬─────────────────────────┬──────────────────┬────────────────────────────────────────────┐
+│    Library    │ Vulnerability  │ Severity │ Status │    Installed Version    │  Fixed Version   │                   Title                    │
+├───────────────┼────────────────┼──────────┼────────┼─────────────────────────┼──────────────────┼────────────────────────────────────────────┤
+│ bsdutils      │ CVE-2026-53615 │ HIGH     │ fixed  │ 1:2.41-5                │ 2.41.5-0+deb13u1 │ [Integer Overflow or Wraparound in         │
+│               │                │          │        │                         │                  │ libblkid/src/partitions/dos.c]             │
+│               │                │          │        │                         │                  │ https://avd.aquasec.com/nvd/cve-2026-53615 │
+├───────────────┤                │          │        ├─────────────────────────┤                  │                                            │
+│ libblkid1     │                │          │        │ 2.41-5                  │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ liblastlog2-2 │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ libmount1     │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ libsmartcols1 │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ libuuid1      │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        ├─────────────────────────┤                  │                                            │
+│ login         │                │          │        │ 1:4.16.0-2+really2.41-5 │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        ├─────────────────────────┤                  │                                            │
+│ mount         │                │          │        │ 2.41-5                  │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ util-linux    │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+└───────────────┴────────────────┴──────────┴────────┴─────────────────────────┴──────────────────┴────────────────────────────────────────────┘
+
+Python (python-pkg)
+===================
+Total: 2 (HIGH: 2, CRITICAL: 0)
+
+┌────────────┬─────────────────────┬──────────┬────────┬───────────────────┬───────────────┬────────────────────────────────────────────────────────┐
+│  Library   │    Vulnerability    │ Severity │ Status │ Installed Version │ Fixed Version │                         Title                          │
+├────────────┼─────────────────────┼──────────┼────────┼───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
+│ msgpack    │ GHSA-6v7p-g79w-8964 │ HIGH     │ fixed  │ 1.1.2             │ 1.2.1         │ MessagePack for Python: Out-of-bounds read / crash on  │
+│            │                     │          │        │                   │               │ Unpacker reuse after a...                              │
+│            │                     │          │        │                   │               │ https://github.com/advisories/GHSA-6v7p-g79w-8964      │
+├────────────┼─────────────────────┤          │        ├───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
+│ setuptools │ CVE-2025-47273      │          │        │ 70.3.0            │ 78.1.1        │ setuptools: Path Traversal Vulnerability in setuptools │
+│            │                     │          │        │                   │               │ PackageIndex                                           │
+│            │                     │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-47273             │
+└────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────┴────────────────────────────────────────────────────────┘
+
+================ report-gateway.txt ================
+
+Report Summary
+
+┌───────────────────────────────────┬────────┬─────────────────┬─────────┐
+│              Target               │  Type  │ Vulnerabilities │ Secrets │
+├───────────────────────────────────┼────────┼─────────────────┼─────────┤
+│ colaba/gateway:ci (alpine 3.24.1) │ alpine │        0        │    -    │
+└───────────────────────────────────┴────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+================ report-media_service.txt ================
+
+Report Summary
+
+┌──────────────────────────────────────────────────────────────────────────────────┬────────────┬─────────────────┬─────────┐
+│                                      Target                                      │    Type    │ Vulnerabilities │ Secrets │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ colaba/media_service:ci (debian 13.6)                                            │   debian   │        9        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ Python                                                                           │ python-pkg │        2        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/amqp-5.3.1.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/asgiref-3.12.1.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/attrs-26.1.0.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/autobahn-26.7.1.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/automat-25.4.16.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/billiard-4.2.4.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/cbor2-6.1.4.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/celery-5.6.3.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/certifi-2026.7.22.dist-info/METADATA      │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/cffi-2.1.1.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/channels-4.1.0.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/channels_redis-4.2.0.dist-info/METADATA   │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/charset_normalizer-3.5.1.dist-info/METAD- │ python-pkg │        0        │    -    │
+│ ATA                                                                              │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/click-8.4.2.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/click_didyoumean-0.3.1.dist-info/METADATA │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/click_plugins-1.1.1.2.dist-info/METADATA  │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/click_repl-0.3.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/constantly-23.10.4.dist-info/METADATA     │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/cryptography-50.0.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/daphne-4.2.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/django-5.2.17.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/django_redis-5.4.0.dist-info/METADATA     │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/djangorestframework-3.15.2.dist-info/MET- │ python-pkg │        0        │    -    │
+│ ADATA                                                                            │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.5.1.dist- │ python-pkg │        0        │    -    │
+│ -info/METADATA                                                                   │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/gunicorn-23.0.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/hyperlink-21.0.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/idna-3.18.dist-info/METADATA              │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/incremental-24.11.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/kombu-5.6.2.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/msgpack-1.2.1.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/packaging-26.3.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pip-26.2.1.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/prompt_toolkit-3.0.53.dist-info/METADATA  │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/psycopg-3.2.3.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/psycopg_binary-3.2.3.dist-info/METADATA   │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pycparser-3.0.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pyjwt-2.13.0.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pyopenssl-26.4.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/python_dateutil-2.9.0.post0.dist-info/ME- │ python-pkg │        0        │    -    │
+│ TADATA                                                                           │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/python_dotenv-1.2.2.dist-info/METADATA    │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/redis-5.0.8.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/requests-2.33.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/service_identity-26.1.0.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/six-1.17.0.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/sqlparse-0.6.0.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/twisted-26.4.0.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/txaio-26.6.1.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/typing_extensions-4.16.0.dist-info/METAD- │ python-pkg │        0        │    -    │
+│ ATA                                                                              │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/tzdata-2026.3.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/tzlocal-5.4.4.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/ujson-5.13.0.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/urllib3-2.7.0.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/vine-5.1.0.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/wcwidth-0.8.2.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/zope_interface-8.5.dist-info/METADATA     │ python-pkg │        0        │    -    │
+└──────────────────────────────────────────────────────────────────────────────────┴────────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+For OSS Maintainers: VEX Notice
+--------------------------------
+If you're an OSS maintainer and Trivy has detected vulnerabilities in your project that you believe are not actually exploitable, consider issuing a VEX (Vulnerability Exploitability eXchange) statement.
+VEX allows you to communicate the actual status of vulnerabilities in your project, improving security transparency and reducing false positives for your users.
+Learn more and start using VEX: https://trivy.dev/docs/v0.70/guide/supply-chain/vex/repo#publishing-vex-documents
+
+To disable this notice, set the TRIVY_DISABLE_VEX_NOTICE environment variable.
+
+
+colaba/media_service:ci (debian 13.6)
+=====================================
 Total: 9 (HIGH: 9, CRITICAL: 0)
 
 ┌───────────────┬────────────────┬──────────┬────────┬─────────────────────────┬──────────────────┬────────────────────────────────────────────┐
@@ -237,16 +452,16 @@ Report Summary
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/cryptography-50.0.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/daphne-4.1.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/daphne-4.2.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/django-5.1.15.dist-info/METADATA          │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/django-5.2.17.dist-info/METADATA          │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/django_redis-5.4.0.dist-info/METADATA     │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/djangorestframework-3.15.2.dist-info/MET- │ python-pkg │        0        │    -    │
 │ ADATA                                                                            │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.3.1.dist- │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.5.1.dist- │ python-pkg │        0        │    -    │
 │ -info/METADATA                                                                   │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/gunicorn-23.0.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
@@ -280,11 +495,11 @@ Report Summary
 │ usr/local/lib/python3.13/site-packages/python_dateutil-2.9.0.post0.dist-info/ME- │ python-pkg │        0        │    -    │
 │ TADATA                                                                           │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/python_dotenv-1.0.1.dist-info/METADATA    │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/python_dotenv-1.2.2.dist-info/METADATA    │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/redis-5.0.8.dist-info/METADATA            │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/requests-2.32.3.dist-info/METADATA        │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/requests-2.33.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/service_identity-26.1.0.dist-info/METADA- │ python-pkg │        0        │    -    │
 │ TA                                                                               │            │                 │         │
@@ -386,6 +601,167 @@ Total: 2 (HIGH: 2, CRITICAL: 0)
 │            │                     │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-47273             │
 └────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────┴────────────────────────────────────────────────────────┘
 
+================ report-user_service.txt ================
+
+Report Summary
+
+┌──────────────────────────────────────────────────────────────────────────────────┬────────────┬─────────────────┬─────────┐
+│                                      Target                                      │    Type    │ Vulnerabilities │ Secrets │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ colaba/user_service:ci (debian 13.6)                                             │   debian   │        9        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ Python                                                                           │ python-pkg │        2        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/asgiref-3.12.1.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/attrs-26.1.0.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/autobahn-26.7.1.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/automat-25.4.16.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/cbor2-6.1.4.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/cffi-2.1.1.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/channels-4.1.0.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/channels_redis-4.2.0.dist-info/METADATA   │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/constantly-23.10.4.dist-info/METADATA     │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/cryptography-50.0.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/daphne-4.2.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/django-5.2.17.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/django_redis-5.4.0.dist-info/METADATA     │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/djangorestframework-3.15.2.dist-info/MET- │ python-pkg │        0        │    -    │
+│ ADATA                                                                            │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.5.1.dist- │ python-pkg │        0        │    -    │
+│ -info/METADATA                                                                   │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/gunicorn-23.0.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/hyperlink-21.0.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/idna-3.18.dist-info/METADATA              │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/incremental-24.11.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/msgpack-1.2.1.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/packaging-26.3.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pip-26.2.1.dist-info/METADATA             │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/psycopg-3.2.3.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/psycopg_binary-3.2.3.dist-info/METADATA   │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pycparser-3.0.dist-info/METADATA          │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pyjwt-2.13.0.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/pyopenssl-26.4.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/python_dotenv-1.2.2.dist-info/METADATA    │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/redis-5.0.8.dist-info/METADATA            │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/service_identity-26.1.0.dist-info/METADA- │ python-pkg │        0        │    -    │
+│ TA                                                                               │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/sqlparse-0.6.0.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/twisted-26.4.0.dist-info/METADATA         │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/txaio-26.6.1.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/typing_extensions-4.16.0.dist-info/METAD- │ python-pkg │        0        │    -    │
+│ ATA                                                                              │            │                 │         │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/ujson-5.13.0.dist-info/METADATA           │ python-pkg │        0        │    -    │
+├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
+│ usr/local/lib/python3.13/site-packages/zope_interface-8.5.dist-info/METADATA     │ python-pkg │        0        │    -    │
+└──────────────────────────────────────────────────────────────────────────────────┴────────────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+For OSS Maintainers: VEX Notice
+--------------------------------
+If you're an OSS maintainer and Trivy has detected vulnerabilities in your project that you believe are not actually exploitable, consider issuing a VEX (Vulnerability Exploitability eXchange) statement.
+VEX allows you to communicate the actual status of vulnerabilities in your project, improving security transparency and reducing false positives for your users.
+Learn more and start using VEX: https://trivy.dev/docs/v0.70/guide/supply-chain/vex/repo#publishing-vex-documents
+
+To disable this notice, set the TRIVY_DISABLE_VEX_NOTICE environment variable.
+
+
+colaba/user_service:ci (debian 13.6)
+====================================
+Total: 9 (HIGH: 9, CRITICAL: 0)
+
+┌───────────────┬────────────────┬──────────┬────────┬─────────────────────────┬──────────────────┬────────────────────────────────────────────┐
+│    Library    │ Vulnerability  │ Severity │ Status │    Installed Version    │  Fixed Version   │                   Title                    │
+├───────────────┼────────────────┼──────────┼────────┼─────────────────────────┼──────────────────┼────────────────────────────────────────────┤
+│ bsdutils      │ CVE-2026-53615 │ HIGH     │ fixed  │ 1:2.41-5                │ 2.41.5-0+deb13u1 │ [Integer Overflow or Wraparound in         │
+│               │                │          │        │                         │                  │ libblkid/src/partitions/dos.c]             │
+│               │                │          │        │                         │                  │ https://avd.aquasec.com/nvd/cve-2026-53615 │
+├───────────────┤                │          │        ├─────────────────────────┤                  │                                            │
+│ libblkid1     │                │          │        │ 2.41-5                  │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ liblastlog2-2 │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ libmount1     │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ libsmartcols1 │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ libuuid1      │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        ├─────────────────────────┤                  │                                            │
+│ login         │                │          │        │ 1:4.16.0-2+really2.41-5 │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        ├─────────────────────────┤                  │                                            │
+│ mount         │                │          │        │ 2.41-5                  │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+├───────────────┤                │          │        │                         │                  │                                            │
+│ util-linux    │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+│               │                │          │        │                         │                  │                                            │
+└───────────────┴────────────────┴──────────┴────────┴─────────────────────────┴──────────────────┴────────────────────────────────────────────┘
+
+Python (python-pkg)
+===================
+Total: 2 (HIGH: 2, CRITICAL: 0)
+
+┌────────────┬─────────────────────┬──────────┬────────┬───────────────────┬───────────────┬────────────────────────────────────────────────────────┐
+│  Library   │    Vulnerability    │ Severity │ Status │ Installed Version │ Fixed Version │                         Title                          │
+├────────────┼─────────────────────┼──────────┼────────┼───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
+│ msgpack    │ GHSA-6v7p-g79w-8964 │ HIGH     │ fixed  │ 1.1.2             │ 1.2.1         │ MessagePack for Python: Out-of-bounds read / crash on  │
+│            │                     │          │        │                   │               │ Unpacker reuse after a...                              │
+│            │                     │          │        │                   │               │ https://github.com/advisories/GHSA-6v7p-g79w-8964      │
+├────────────┼─────────────────────┤          │        ├───────────────────┼───────────────┼────────────────────────────────────────────────────────┤
+│ setuptools │ CVE-2025-47273      │          │        │ 70.3.0            │ 78.1.1        │ setuptools: Path Traversal Vulnerability in setuptools │
+│            │                     │          │        │                   │               │ PackageIndex                                           │
+│            │                     │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2025-47273             │
+└────────────┴─────────────────────┴──────────┴────────┴───────────────────┴───────────────┴────────────────────────────────────────────────────────┘
+
 ================ report-workspace_service.txt ================
 
 Report Summary
@@ -422,16 +798,16 @@ Report Summary
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/cryptography-50.0.0.dist-info/METADATA    │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/daphne-4.1.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/daphne-4.2.2.dist-info/METADATA           │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/django-5.1.15.dist-info/METADATA          │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/django-5.2.17.dist-info/METADATA          │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/django_redis-5.4.0.dist-info/METADATA     │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/djangorestframework-3.15.2.dist-info/MET- │ python-pkg │        0        │    -    │
 │ ADATA                                                                            │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.3.1.dist- │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/djangorestframework_simplejwt-5.5.1.dist- │ python-pkg │        0        │    -    │
 │ -info/METADATA                                                                   │            │                 │         │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/gunicorn-23.0.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
@@ -458,11 +834,11 @@ Report Summary
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/pyopenssl-26.4.0.dist-info/METADATA       │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/python_dotenv-1.0.1.dist-info/METADATA    │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/python_dotenv-1.2.2.dist-info/METADATA    │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/redis-5.0.8.dist-info/METADATA            │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
-│ usr/local/lib/python3.13/site-packages/requests-2.32.3.dist-info/METADATA        │ python-pkg │        0        │    -    │
+│ usr/local/lib/python3.13/site-packages/requests-2.33.0.dist-info/METADATA        │ python-pkg │        0        │    -    │
 ├──────────────────────────────────────────────────────────────────────────────────┼────────────┼─────────────────┼─────────┤
 │ usr/local/lib/python3.13/site-packages/service_identity-26.1.0.dist-info/METADA- │ python-pkg │        0        │    -    │
 │ TA                                                                               │            │                 │         │
