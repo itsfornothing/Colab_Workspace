@@ -10,3 +10,5 @@ daphne==4.2.2
 redis==5.0.8
 django-redis==5.4.0
 gunicorn==23.0.0
+msgpack==1.2.1
+setuptools>=78.1.1

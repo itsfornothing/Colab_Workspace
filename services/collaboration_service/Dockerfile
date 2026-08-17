@@ -6,6 +6,7 @@ FROM python:3.13-slim
 # "cannot allocate memory" build failure (344 MB of compiler
 # toolchain was being downloaded and compiled inside Docker).
 RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
         libpq5 \
         curl \

@@ -2,6 +2,7 @@ FROM python:3.13-slim
 
 # psycopg[binary] ships pre-compiled wheels — no build-essential needed.
 RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
         libpq5 \
         curl \
