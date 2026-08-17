@@ -1,4 +1,4 @@
-Django==5.1
+Django==5.1.15
 celery==5.4.0
 channels==4.1.0
 channels-redis==4.2.0

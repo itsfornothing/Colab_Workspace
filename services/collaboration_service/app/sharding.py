@@ -21,7 +21,9 @@ def get_shard(document_id: str, total_shards: int = 4) -> int:
     Uses the first 8 hex characters of the MD5 digest of the document_id
     string — cheap, deterministic, and process-independent.
     """
-    digest = hashlib.md5(str(document_id).encode()).hexdigest()
+    digest = hashlib.md5(
+        str(document_id).encode(), usedforsecurity=False
+    ).hexdigest()
     return int(digest[:8], 16) % total_shards
 
 
