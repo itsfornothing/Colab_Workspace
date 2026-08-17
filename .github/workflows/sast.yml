@@ -1,0 +1,199 @@
+name: SAST
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - "security-reports/**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ python, javascript-typescript ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+          build-mode: none
+      - uses: github/codeql-action/analyze@v4
+
+  semgrep:
+    name: Semgrep
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: returntocorp/semgrep-action@v2
+        with:
+          publish-deployment: semgrep
+          publish-token: ${{ secrets.SEMGREP_APP_TOKEN }}
+          config: >
+            p/owasp-top-ten
+            p/python
+            p/django
+            p/default
+          audit-on: push
+          generate-sarif: "1"
+          sarif-file: semgrep.sarif
+      - uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+
+  bandit:
+    name: Bandit
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Bandit
+        run: |
+          pip install bandit
+          bandit -r services/ -ll \
+            -x "**/tests/**,**/migrations/**,**/test_*.py,services/*/node_modules" \
+            --format sarif --output bandit.sarif || true
+      - uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: bandit.sarif
+
+  pip-audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pypa/gh-action-pip-audit@v1
+        with:
+          inputs: >-
+            services/user_service/requirements.txt
+            services/workspace_service/requirements.txt
+            services/chat_service/requirements.txt
+            services/collaboration_service/requirements.txt
+            services/notification_service/requirements.txt
+            services/media_service/requirements.txt
+
+  trivy:
+    name: Trivy image scan (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: user_service
+            context: ./services/user_service
+            dockerfile: Dockerfile
+          - service: workspace_service
+            context: ./services/workspace_service
+            dockerfile: Dockerfile
+          - service: chat_service
+            context: ./services/chat_service
+            dockerfile: Dockerfile
+          - service: collaboration_service
+            context: ./services/collaboration_service
+            dockerfile: Dockerfile
+          - service: notification_service
+            context: ./services/notification_service
+            dockerfile: Dockerfile
+          - service: media_service
+            context: ./services/media_service
+            dockerfile: Dockerfile
+          - service: gateway
+            context: ./gateway
+            dockerfile: DockerFile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -f ${{ matrix.context }}/${{ matrix.dockerfile }} \
+            -t colaba/${{ matrix.service }}:ci ${{ matrix.context }}
+
+      - name: Scan with Trivy (HIGH and CRITICAL only)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: colaba/${{ matrix.service }}:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          format: sarif
+          output: trivy-${{ matrix.service }}.sarif
+          exit-code: 1
+          timeout: 10m
+
+      - name: Generate readable report
+        if: always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: colaba/${{ matrix.service }}:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          format: table
+          output: report-${{ matrix.service }}.txt
+          timeout: 10m
+
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-${{ matrix.service }}.sarif
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report-${{ matrix.service }}
+          path: report-${{ matrix.service }}.txt
+
+  trivy-report:
+    name: Commit scan report
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: trivy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: reports
+          merge-multiple: true
+      - name: Combine reports
+        run: |
+          mkdir -p security-reports
+          : > security-reports/trivy.txt
+          for f in reports/report-*.txt; do
+            if [ -s "$f" ]; then
+              printf '\n================ %s ================\n' "$(basename "$f")" >> security-reports/trivy.txt
+              cat "$f" >> security-reports/trivy.txt
+            fi
+          done
+          if [ ! -s security-reports/trivy.txt ]; then
+            echo "No HIGH/CRITICAL findings in any image." > security-reports/trivy.txt
+          fi
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add security-reports/trivy.txt
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+          else
+            git commit -m "chore(security): update Trivy scan report"
+            git push
+          fi
