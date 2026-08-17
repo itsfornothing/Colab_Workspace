@@ -22,7 +22,8 @@ ENV PYTHONUNBUFFERED=1
 # (accessible to appuser at runtime).
 COPY requirements.txt /app/
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt \
+    && rm -f /usr/local/lib/python3.13/site-packages/pip/_vendor/bom.cdx.json
 
 COPY --chown=appuser:appuser . /app
 
