@@ -50,13 +50,17 @@ def _fire_notification(user_id: str, title: str, message: str, metadata: dict = 
     }).encode()
 
     try:
+        parsed = urllib.request.urlparse(endpoint)
+        if parsed.scheme not in ("http", "https"):
+            logger.warning("Blocked notification request to non-HTTP URL: %s", endpoint)
+            return
         req = urllib.request.Request(
             endpoint,
             data=payload,
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        urllib.request.urlopen(req, timeout=5)
+        urllib.request.urlopen(req, timeout=5)  # nosec B310
         logger.info("Sent due-date notification to user %s for task %s", user_id, metadata.get("task_id"))
     except Exception as exc:
         logger.warning("Could not reach notification service: %s", exc)

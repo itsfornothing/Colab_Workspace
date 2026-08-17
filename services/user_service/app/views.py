@@ -615,13 +615,19 @@ def profile_view(request):
     # This handles the case where the column exists in DB but ORM cache is stale,
     # or where the migration was applied manually outside Django.
     saved = []
+    update_sql = {
+        "full_name": 'UPDATE app_user SET "full_name" = %s WHERE id = %s',
+        "job_title": 'UPDATE app_user SET "job_title" = %s WHERE id = %s',
+        "bio": 'UPDATE app_user SET "bio" = %s WHERE id = %s',
+        "avatar_url": 'UPDATE app_user SET "avatar_url" = %s WHERE id = %s',
+    }
     with connection.cursor() as cursor:
         for field, value in updates.items():
+            sql = update_sql.get(field)
+            if sql is None:
+                continue
             try:
-                cursor.execute(
-                    f'UPDATE app_user SET "{field}" = %s WHERE id = %s',
-                    [value, str(user.id)],
-                )
+                cursor.execute(sql, [value, str(user.id)])
                 saved.append(field)
             except Exception as sql_err:
                 logger.warning("Raw SQL update failed for field %s: %s", field, sql_err)

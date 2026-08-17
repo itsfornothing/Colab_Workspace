@@ -320,13 +320,17 @@ def _fire_notification(user_id: str, title: str, message: str, metadata: dict = 
 
     def _post():
         try:
+            parsed = urllib.request.urlparse(endpoint)
+            if parsed.scheme not in ("http", "https"):
+                logger.warning("Blocked notification request to non-HTTP URL: %s", endpoint)
+                return
             req = urllib.request.Request(
                 endpoint,
                 data=payload,
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            urllib.request.urlopen(req, timeout=5)
+            urllib.request.urlopen(req, timeout=5)  # nosec B310
         except Exception:
             logger.warning("Could not reach notification service at %s", endpoint)
 
