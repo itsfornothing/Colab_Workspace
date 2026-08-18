@@ -19,6 +19,7 @@ FROM python:3.13-slim
 # Install runtime dependencies
 RUN apt-get update && apt-get upgrade -y --no-install-recommends && apt-get install -y --no-install-recommends \
     libpq5 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -M -r appuser && mkdir /app && chown -R appuser:appuser /app

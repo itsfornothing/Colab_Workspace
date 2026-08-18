@@ -31,17 +31,19 @@ services:
 
   # ── Nginx API Gateway ────────────────────────────────────
   nginx:
-    image: nginx:1.27-alpine
+    build:
+      context: ../gateway
+      dockerfile: DockerFile
+    image: colaba/gateway:infra
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ../gateway/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ../gateway/nginx/conf.d:/etc/nginx/conf.d:ro
-      - ../gateway/nginx/proxy_params:/etc/nginx/proxy_params:ro
-      - ../gateway/nginx/proxy_ws:/etc/nginx/proxy_ws:ro
-      - ../certs:/etc/nginx/certs:ro
+      # Frontend SPA static build (optional; leave out to serve API only)
       - ../frontend/web/build:/usr/share/nginx/html:ro
+      # Production TLS certs: mount over the image defaults (which are
+      # self-signed placeholders when the repo copies are empty).
+      - ../gateway/certs:/etc/nginx/certs:ro
       - nginx_cache:/var/cache/nginx
       - nginx_logs:/var/log/nginx
     depends_on:
@@ -62,7 +64,7 @@ services:
   user-service:
     <<: *django-base
     build:
-      context: ../services/user-service
+      context: ../services/user_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -90,7 +92,7 @@ services:
   workspace-service:
     <<: *django-base
     build:
-      context: ../services/workspace-service
+      context: ../services/workspace_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -114,7 +116,7 @@ services:
   chat-service:
     <<: *django-base
     build:
-      context: ../services/chat-service
+      context: ../services/chat_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -138,7 +140,7 @@ services:
   collaboration-service:
     <<: *django-base
     build:
-      context: ../services/collaboration-service
+      context: ../services/collaboration_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -162,7 +164,7 @@ services:
   notification-service:
     <<: *django-base
     build:
-      context: ../services/notification-service
+      context: ../services/notification_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -189,7 +191,7 @@ services:
   media-service:
     <<: *django-base
     build:
-      context: ../services/media-service
+      context: ../services/media_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -215,7 +217,7 @@ services:
   celery-worker:
     <<: *django-base
     build:
-      context: ../services/notification-service
+      context: ../services/notification_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
@@ -237,7 +239,7 @@ services:
   celery-beat:
     <<: *django-base
     build:
-      context: ../services/notification-service
+      context: ../services/notification_service
       dockerfile: Dockerfile
     environment:
       <<: *django-env
