@@ -26,6 +26,7 @@ RUN useradd -M -r appuser && mkdir /app && chown -R appuser:appuser /app
 WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
+RUN rm -f /usr/local/lib/python3.13/site-packages/pip/_vendor/bom.cdx.json
 
 COPY --chown=appuser:appuser . /app
 
